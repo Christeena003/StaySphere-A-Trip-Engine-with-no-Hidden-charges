@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StaySphere — Arrival-Hub Trip Planner | Traveler Sign In</title>
+  <meta name="description" content="Plan end-to-end Bharat trips from arrival hubs with zero hidden fees, live map routes, and group split wallets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page traveler-theme">
+
+  <!-- Moving Video-Like Background Layer Shifting with Indian Standard Time (IST) -->
+  <div class="ist-animated-bg" aria-hidden="true">
+    <div class="ist-bg-image"></div>
+    <div class="ist-overlay-shader"></div>
+    <div class="ist-ambient-glow"></div>
+  </div>
+
+  <main class="auth-container">
+    <!-- Visual Showcase Side -->
+    <section class="auth-visual" aria-label="StaySphere Traveler Highlights">
+      <header class="visual-header">
+        <a href="index.html" class="brand-wrapper" title="StaySphere Home">
+          <img src="assets/icon-mountain.webp" alt="StaySphere Mountain Icon" class="brand-logo-img">
+          <span class="brand-title dark"><span class="brand-s">S</span>taySphere</span>
+          <span class="badge-tag">Traveler</span>
+        </a>
+
+        <!-- Live IST Daypart Indicator -->
+        <div style="text-align: right;">
+          <div class="ist-time-pill" title="Live Indian Standard Time">
+            <span class="ist-dot" id="ist-status-dot"></span>
+            <span>IST <strong id="ist-live-clock">--:-- --</strong></span>
+            <span id="ist-daypart-label" style="opacity: 0.85; font-size: 0.72rem; margin-left: 0.25rem;">Live Sky</span>
+          </div>
+          <!-- Real-Time Daypart Preview Tester -->
+          <div class="ist-preview-controls">
+            <button type="button" class="btn-time-shift" data-time="auto" title="Reset to Live IST">Auto</button>
+            <button type="button" class="btn-time-shift" data-time="morning" title="Morning Sunrise">Dawn</button>
+            <button type="button" class="btn-time-shift" data-time="afternoon" title="Daylight Azure">Noon</button>
+            <button type="button" class="btn-time-shift" data-time="sunset" title="Dusk Twilight">Dusk</button>
+            <button type="button" class="btn-time-shift" data-time="night" title="Midnight Indigo">Night</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="visual-content">
+        <div class="visual-eyebrow">
+          Arrival-Hub Trip Planner
+        </div>
+        <h1 class="visual-title">Plan your trip from arrival to adventure.</h1>
+        <p class="visual-description">
+          Enter an arrival hub like Chandigarh or Bhuntar, get full route pins (Manali &rarr; Kullu &rarr; Kasol), and book with 100% transparent pricing.
+        </p>
+
+        <ul class="feature-bullets">
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <strong>Zero Hidden Chores or Charges:</strong> Clear ₹500 flat fee stated upfront.
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <strong>Interactive &amp; Offline Maps:</strong> Actual downloadable route mini-map.
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <strong>Group Split &amp; In-App Wallet:</strong> Share trip costs with friends seamlessly.
+          </li>
+        </ul>
+      </div>
+
+      <div class="visual-card">
+        <img src="assets/icon-mountain.webp" alt="Peak" style="width: 36px; height: 36px; object-fit: contain;">
+        <div style="font-size: 0.85rem; line-height: 1.4;">
+          <p style="margin: 0; font-weight: 600;">"No surprise cleaning fees at checkout. Paid exactly ₹1,800 for 2 nights plus ₹500 flat fee."</p>
+          <span style="opacity: 0.8; font-size: 0.75rem;">— Rohan K., Chandigarh &rarr; Kasol group trip</span>
+        </div>
+      </div>
+
+      <footer class="visual-footer">
+        <span>&copy; 2026 StaySphere</span>
+        <a href="index.html" style="color:var(--white); text-decoration:underline;">&larr; Back to Platform</a>
+      </footer>
+    </section>
+
+    <!-- Right Side: Forms -->
+    <section class="auth-content" aria-label="Traveler Account Access">
+      <div class="auth-form-wrapper">
+
+        <!-- Switch to Business portal banner -->
+        <aside class="portal-switch-banner">
+          <div class="portal-switch-text">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>
+            Hotel, resort, or travel agency?
+          </div>
+          <a href="business-auth.html" class="portal-switch-link" title="Open Business & Host Portal">
+            Business Portal &rarr;
+          </a>
+        </aside>
+
+        <!-- Dynamic Form Header -->
+        <header class="form-header">
+          <h1 id="form-title">Welcome back</h1>
+          <p id="form-subtitle">Sign in to resume planning your Indian journeys.</p>
+        </header>
+
+        <!-- Segmented Tab Navigation -->
+        <nav class="auth-tabs" role="tablist" aria-label="Account Action">
+          <button class="tab-btn active" role="tab" id="tab-signin" aria-selected="true" data-tab="signin">
+            Sign In
+          </button>
+          <button class="tab-btn" role="tab" id="tab-signup" aria-selected="false" data-tab="signup">
+            Sign Up
+          </button>
+        </nav>
+
+        <!-- Social Auth -->
+        <div class="social-buttons">
+          <button type="button" class="btn-social" onclick="alert('Google Auth simulation')">
+            <svg viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="btn-social" onclick="alert('Phone OTP simulation')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Phone OTP
+          </button>
+        </div>
+
+        <div class="auth-divider">
+          <span>or continue with email</span>
+        </div>
+
+        <!-- ==================== SIGN IN ==================== -->
+        <form id="form-signin" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="signin-email">Email or Mobile</label>
+            <span id="signin-email-hint" class="field-hint">e.g. rohan@gmail.com</span>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input
+                type="email"
+                id="signin-email"
+                name="email"
+                class="form-control"
+                placeholder="your.name@gmail.com"
+                required
+                autocomplete="username"
+                enterkeyhint="next"
+                aria-describedby="signin-email-hint"
+              >
+            </div>
+            <div class="field-error" role="alert">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signin-password">Password</label>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input
+                type="password"
+                id="signin-password"
+                name="password"
+                class="form-control"
+                placeholder="Enter password"
+                required
+                autocomplete="current-password"
+                enterkeyhint="done"
+              >
+              <button type="button" class="btn-toggle-pw" data-target="signin-password" aria-label="Show password" aria-pressed="false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="remember-label">
+              <input type="checkbox" name="remember" id="signin-remember">
+              <span>Remember me</span>
+            </label>
+            <a href="javascript:void(0)" class="forgot-password-link" onclick="triggerForgotPassword('traveler')">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            Sign In to StaySphere
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+
+          <div class="demo-badge-bar">
+            <span>Quick Review Mode:</span>
+            <button type="button" class="btn-demo-fill" id="fill-traveler-demo">
+              Fill Demo Traveler
+            </button>
+          </div>
+        </form>
+
+        <!-- ==================== SIGN UP ==================== -->
+        <form id="form-signup" class="auth-form" style="display: none;" novalidate>
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input
+                type="text"
+                id="signup-name"
+                name="name"
+                class="form-control"
+                placeholder="Rohan Sharma"
+                required
+                autocomplete="name"
+                enterkeyhint="next"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-email">Email Address</label>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input
+                type="email"
+                id="signup-email"
+                name="email"
+                class="form-control"
+                placeholder="rohan@example.in"
+                required
+                autocomplete="email"
+                enterkeyhint="next"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-phone">Mobile Number</label>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <input
+                type="tel"
+                id="signup-phone"
+                name="phone"
+                class="form-control"
+                placeholder="+91 98765 43210"
+                autocomplete="tel"
+                inputmode="tel"
+                enterkeyhint="next"
+              >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signup-password">Create Password</label>
+            <div class="input-container">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input
+                type="password"
+                id="signup-password"
+                name="password"
+                class="form-control"
+                placeholder="Minimum 8 characters"
+                required
+                autocomplete="new-password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                minlength="8"
+                enterkeyhint="done"
+                data-strength-check="true"
+                aria-describedby="signup-password-requirements"
+              >
+              <button type="button" class="btn-toggle-pw" data-target="signup-password" aria-label="Show password" aria-pressed="false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+
+            <div id="signup-password-strength-meter" class="password-strength-meter">
+              <div id="signup-password-strength-fill" class="password-strength-fill"></div>
+            </div>
+
+            <div id="signup-password-requirements" class="password-requirements">
+              <div class="req-item" data-rule="req-len">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2" stroke="currentColor" fill="none" opacity="0.4"/></svg>
+                At least 8 characters
+              </div>
+              <div class="req-item" data-rule="req-upper">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2" stroke="currentColor" fill="none" opacity="0.4"/></svg>
+                Uppercase &amp; lowercase letters
+              </div>
+              <div class="req-item" data-rule="req-num">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2" stroke="currentColor" fill="none" opacity="0.4"/></svg>
+                At least one number (0-9)
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 0.2rem;">
+            <label class="remember-label" style="align-items: flex-start;">
+              <input type="checkbox" required name="termsAccepted" id="terms-agree">
+              <span style="font-size: 0.78rem; line-height: 1.4;">
+                I agree to the StaySphere Terms and Zero Hidden Charges Policy.
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            Create Account &bull; Start Planning
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+
+        <p class="terms-notice">
+          Flat ₹500 Platform Fee &bull; No Hidden Chores &bull; 100% Bifurcated Bills
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/ist-engine.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

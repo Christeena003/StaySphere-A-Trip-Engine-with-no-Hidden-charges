@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StaySphere — Arrival-Hub Trip Planner | Zero Hidden Fees</title>
+  <meta name="description" content="Plan solo and group Bharat trips from arrival hubs (Chandigarh to Manali, Kullu, Kasol). Zero hidden charges, offline mini-maps, group wallets, and transparent bifurcated pricing.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet OpenStreetMap CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- ==================== MINIMAL LOADER (No emojis) ==================== -->
+  <div id="app-unique-loader" class="unique-loader-screen" aria-label="Loading StaySphere">
+    <div class="loader-mountain-box">
+      <div class="loader-compass-ring"></div>
+      <img src="assets/icon-mountain.webp" alt="StaySphere Mountain Peak">
+    </div>
+    <div class="loader-brand">
+      <span class="brand-s">S</span>taySphere
+    </div>
+    <div class="loader-tagline">
+      Arrival-Hub Trip Engine
+    </div>
+    <div class="loader-quote-box">
+      <span id="loader-dynamic-quote">Locating arrival transit hubs and connecting regional routes...</span>
+    </div>
+    <button type="button" class="btn-skip-loader" id="btn-skip-loader">Skip to Explore</button>
+  </div>
+
+  <!-- ==================== CLEAN SPACIOUS APP HEADER ==================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <!-- Brand Logo with Gothic A1 & Big Stylish 'S' -->
+      <a href="#home" class="brand-container" data-switch-tab="home" title="StaySphere">
+        <img src="assets/icon-mountain.webp" alt="StaySphere" class="brand-logo-img">
+        <span class="brand-title"><span class="brand-s">S</span>taySphere</span>
+      </a>
+
+      <!-- Navigation Tabs (Requirement 5, 7, 11: Clean labels, no emojis, no host tab on user nav) -->
+      <nav class="nav-tabs-bar" role="tablist">
+        <button type="button" class="nav-tab-item active" data-view="home" role="tab" aria-selected="true">
+          Home
+        </button>
+        <button type="button" class="nav-tab-item" data-view="explore" role="tab" aria-selected="false">
+          Explore
+        </button>
+        <button type="button" class="nav-tab-item" data-view="planner" role="tab" aria-selected="false">
+          Trip Planner
+        </button>
+        <button type="button" class="nav-tab-item" data-view="checkout" role="tab" aria-selected="false">
+          Cart
+        </button>
+        <button type="button" class="nav-tab-item" data-view="pasttrips" role="tab" aria-selected="false">
+          Past Trips
+        </button>
+        <button type="button" class="nav-tab-item" data-view="group" role="tab" aria-selected="false">
+          Friends &amp; Group
+        </button>
+      </nav>
+
+      <!-- Right Side: Live IST Clock & Single Login / Signup (Requirement 6) -->
+      <div class="header-right">
+        <div class="header-ist-pill" title="Indian Standard Time">
+          <span class="ist-indicator-dot"></span>
+          <span>IST <strong id="ist-live-clock">--:-- --</strong></span>
+        </div>
+        <button type="button" class="btn-header-login" data-open-role="login">
+          Login
+        </button>
+        <button type="button" class="btn-header-signup" data-open-role="signup">
+          Signup
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-content">
+
+    <!-- ==================== 1. HOME / DASHBOARD TAB ==================== -->
+    <section id="view-home" class="app-view active">
+      <div class="dashboard-hero-box">
+        <span class="hero-tagline-badge">
+          Zero Hidden Charges &bull; Transparent Indian Travel
+        </span>
+        <h1 class="hero-main-title">
+          Plan complete journeys directly from your arrival hub.
+        </h1>
+        <p class="hero-sub-text">
+          Select an arrival railway station or airport. StaySphere maps the optimal regional circuit, gives you customizable spots, and ensures every single rupee is transparently accounted for.
+        </p>
+
+        <!-- Spacious Dynamic Hub Search Deck (Requirement 12) -->
+        <div class="spacious-hub-selector">
+          <div class="hub-input-group">
+            <label for="quick-dest">1. Destination Circuit</label>
+            <select id="quick-dest">
+              <option value="manali">Manali, Kullu &amp; Kasol Valley</option>
+              <option value="rajasthan">Jaipur, Udaipur &amp; Kumbhalgarh</option>
+              <option value="goa">Old Goa &amp; South Heritage Beaches</option>
+              <option value="kerala">Munnar Hills &amp; Alleppey Backwaters</option>
+              <option value="sikkim">Gangtok, Pelling &amp; Kanchenjunga</option>
+              <option value="uttarakhand">Rishikesh, Mussoorie &amp; Tehri</option>
+              <option value="ladakh">Leh, Nubra Valley &amp; Pangong Tso</option>
+            </select>
+          </div>
+
+          <div class="hub-input-group">
+            <label for="quick-hub">2. Arrival Hub (Dynamic)</label>
+            <select id="quick-hub">
+              <!-- Dynamically populated via JS based on destination -->
+            </select>
+          </div>
+
+          <div class="hub-input-group">
+            <label for="quick-duration">3. Prefered Duration</label>
+            <select id="quick-duration">
+              <option value="3">3 Days (Weekend Escapade)</option>
+              <option value="4" selected>4 Days (Standard Route)</option>
+              <option value="5">5 Days (Extended Exploration)</option>
+              <option value="7">7 Days (Full Circuit)</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn-launch-planner" data-switch-tab="planner">
+            Plan Hub Route &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Minimal, Airy Pillars -->
+      <div class="three-pillars-grid">
+        <div class="minimal-pillar">
+          <h3>No Hidden Charges Anywhere</h3>
+          <p>A flat ₹500 platform fee declared right at the start. No sudden cleaning chores, checkout fees, or inflated margins. Designed to eliminate cart abandonment completely.</p>
+        </div>
+
+        <div class="minimal-pillar">
+          <h3>Actual Offline Mini Map Download</h3>
+          <p>Heading into high Himalayan passes with zero mobile signal? Download your complete route mini-map card with planned pins, emergency helpline numbers, and GPS coordinates.</p>
+        </div>
+
+        <div class="minimal-pillar">
+          <h3>Group Split &amp; In-App Wallet</h3>
+          <p>Invite friends to your live itinerary. Conduct real-time polls on sight visits, split expenses equally, and pool shares into the built-in group wallet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. EXPLORE TAB (Requirement 11) ==================== -->
+    <section id="view-explore" class="app-view">
+      <header class="explore-top-deck">
+        <div>
+          <h2>Explore Circuits &amp; Arrival Hubs</h2>
+          <p style="color:var(--neutral-500); font-size:1rem; margin-top:0.35rem;">
+            Curated regional circuits planned from primary Indian transit hubs.
+          </p>
+        </div>
+        <div style="font-size:0.88rem; color:var(--primary-700); font-weight:700;">
+          Transparent Rates &bull; Verified Local Hosts
+        </div>
+      </header>
+
+      <div class="explore-destinations-grid">
+        <!-- 1. Manali -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80" alt="Manali Mountains">
+            <span class="dest-season-tag">Winter Snow &bull; Oct - Mar</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Chandigarh (IXC) / Bhuntar</span>
+            <h3>Manali, Kullu &amp; Kasol Valley</h3>
+            <p>Cedar forests, Rohtang snow point, Atal tunnel gateway, Parvati river hot springs, and cozy apple orchard homestays.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹5,200</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="manali" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. Rajasthan -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80" alt="Rajasthan Haveli">
+            <span class="dest-season-tag">Heritage Forts &bull; Oct - Mar</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Jaipur Junction / Udaipur Airport</span>
+            <h3>Jaipur, Udaipur &amp; Kumbhalgarh</h3>
+            <p>Magnificent royal havelis, Amber Fort light shows, romantic Lake Pichola boat rides, and authentic Mewari feasts.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹6,800</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="rajasthan" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. Goa -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80" alt="Goa Coastline">
+            <span class="dest-season-tag">Coastal Living &bull; All Year</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Dabolim (GOI) / Mopa (GOX)</span>
+            <h3>Old Goa &amp; South Secret Beaches</h3>
+            <p>Portuguese heritage quarters in Fontainhas, pristine white sand shores of Palolem, and tranquil spice plantation tours.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹7,000</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="goa" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Kerala -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80" alt="Kerala Backwaters">
+            <span class="dest-season-tag">Backwaters &bull; Sep - Mar</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Kochi International (COK)</span>
+            <h3>Munnar Hills &amp; Alleppey Backwaters</h3>
+            <p>Rolling misty tea gardens of Munnar, traditional wooden houseboats on Vembanad lake, and authentic Ayurvedic wellness.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹7,500</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="kerala" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. Sikkim -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=800&q=80" alt="Sikkim Kanchenjunga">
+            <span class="dest-season-tag">Eastern Himalaya &bull; Mar - Dec</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Bagdogra Airport (IXB)</span>
+            <h3>Gangtok, Pelling &amp; Kanchenjunga</h3>
+            <p>Ancient Tibetan Buddhist monasteries, sacred high-altitude Tsomgo Lake, and unobstructed views of Mt. Kanchenjunga.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹6,000</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="sikkim" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. Uttarakhand -->
+        <article class="clean-dest-card">
+          <div class="dest-photo-box">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Rishikesh Ganga">
+            <span class="dest-season-tag">Garhwal Hills &bull; Sep - Jun</span>
+          </div>
+          <div class="dest-card-content">
+            <span class="dest-hub-caption">Arrival Hub: Dehradun Jolly Grant (DED)</span>
+            <h3>Rishikesh, Mussoorie &amp; Tehri</h3>
+            <p>Evening Ganga Aarti on Ram Jhula, white-water river rafting, mountain cafes, and walks along the Mussoorie ridge.</p>
+            <div class="dest-card-footer">
+              <div>
+                <span style="font-size:0.8rem; color:var(--neutral-400); display:block;">Starting Room Rate</span>
+                <strong style="font-size:1.2rem; color:var(--neutral-900);">₹5,500</strong>
+                <span style="font-size:0.85rem; color:var(--neutral-500);">/ room / night</span>
+              </div>
+              <button type="button" class="btn-portal-primary" data-plan-destination="uttarakhand" style="padding:0.6rem 1.25rem;">
+                Plan Route &rarr;
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================== 3. TRIP PLANNER TAB (Requirement 8, 10, 12, 4) ==================== -->
+    <section id="view-planner" class="app-view">
+      <div class="planner-freer-grid">
+
+        <!-- Left Controls Column -->
+        <div class="planner-controls-column">
+          
+          <!-- Hub & Route Settings Card with Dynamic Hub (Requirement 12) & Off-Season Slashed Price (Requirement 8) -->
+          <div class="planner-section-card">
+            <div class="section-headline">
+              <span>Arrival Hub &amp; Pricing</span>
+              <span style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-size:0.75rem; font-weight:700; padding:0.25rem 0.65rem; border-radius:99px;">
+                Flat ₹500 Fee Announced
+              </span>
+            </div>
+
+            <!-- Off-Season Price Drop Display (Requirement 8: 5 sizes bigger, original slashed underneath) -->
+            <div id="planner-price-display">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:1.15rem; margin-top:1.25rem;">
+              <div>
+                <label style="font-size:0.76rem; font-weight:700; color:var(--neutral-500); text-transform:uppercase; display:block; margin-bottom:0.35rem;">
+                  1. Destination Circuit:
+                </label>
+                <select id="select-destination-circuit" class="form-control">
+                  <option value="manali" selected>Manali, Kullu &amp; Kasol Valley</option>
+                  <option value="rajasthan">Jaipur, Udaipur &amp; Kumbhalgarh</option>
+                  <option value="goa">Old Goa &amp; South Heritage Beaches</option>
+                  <option value="kerala">Munnar Hills &amp; Alleppey Backwaters</option>
+                  <option value="sikkim">Gangtok, Pelling &amp; Kanchenjunga</option>
+                  <option value="uttarakhand">Rishikesh, Mussoorie &amp; Tehri</option>
+                  <option value="ladakh">Leh, Nubra Valley &amp; Pangong Tso</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="font-size:0.76rem; font-weight:700; color:var(--neutral-500); text-transform:uppercase; display:block; margin-bottom:0.35rem;">
+                  2. Arrival Hub (Dynamic Transit):
+                </label>
+                <select id="select-arrival-hub" class="form-control">
+                  <!-- Dynamically populated via JS -->
+                </select>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
+                <div>
+                  <label style="font-size:0.76rem; font-weight:700; color:var(--neutral-500); text-transform:uppercase; display:block; margin-bottom:0.35rem;">
+                    3. Duration:
+                  </label>
+                  <select id="select-trip-days" class="form-control">
+                    <option value="3">3 Days (Weekend)</option>
+                    <option value="4" selected>4 Days (Standard)</option>
+                    <option value="5">5 Days (Extended)</option>
+                    <option value="7">7 Days (Full Circuit)</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size:0.76rem; font-weight:700; color:var(--neutral-500); text-transform:uppercase; display:block; margin-bottom:0.35rem;">
+                    4. Travelers:
+                  </label>
+                  <input type="number" id="input-travelers-count" class="form-control" value="2" min="1" max="15">
+                </div>
+              </div>
+              <div class="occupancy-grid">
+                <div>
+                  <label class="planner-mini-label">Adults</label>
+                  <input type="number" id="input-adults-count" class="form-control" value="2" min="1" max="15">
+                </div>
+                <div>
+                  <label class="planner-mini-label">Children</label>
+                  <input type="number" id="input-children-count" class="form-control" value="0" min="0" max="10">
+                </div>
+              </div>
+              <div id="occupancy-pricing-note" class="occupancy-pricing-note">Enter adults and children separately so room count and extra-guest charges update immediately.</div>
+            </div>
+          </div>
+
+          <!-- Added feature: selectable accommodation pricing instead of one standardized rate -->
+          <div class="planner-section-card">
+            <div class="section-headline">
+              <span>Choose Your Accommodation</span>
+              <span style="font-size:0.76rem; color:var(--neutral-400);">Property-by-property pricing</span>
+            </div>
+            <p style="font-size:0.82rem; color:var(--neutral-500); margin-bottom:1rem;">
+              Compare individual stays and choose the property that fits your trip. Prices shown are indicative prototype rates.
+            </p>
+            <div id="accommodation-options" class="accommodation-options-grid"></div>
+          </div>
+
+          <!-- User-Customizable Route Spots (Requirement 10) -->
+          <div class="planner-section-card">
+            <div class="section-headline">
+              <span>Customizable Route Stops</span>
+              <span style="font-size:0.76rem; color:var(--neutral-400);">Toggle to Redraw Route</span>
+            </div>
+            <p style="font-size:0.82rem; color:var(--neutral-500); margin-bottom:1rem;">
+              Select the places you want to visit on the way. The map route updates dynamically to connect only your chosen spots.
+            </p>
+            <div id="customizable-stops-container" class="customizable-stops-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Optional Chores & Services (with clear price tags right beside) -->
+          <div class="planner-section-card">
+            <div class="section-headline">
+              <span>Optional Services</span>
+              <span style="font-size:0.76rem; color:var(--neutral-400);">Transparent Itemized Add-ons</span>
+            </div>
+            <div class="services-checklist">
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="breakfast" checked>
+                  <span>Homecooked Fresh Breakfast</span>
+                </div>
+                <span class="service-price-tag">+₹150 /person/day</span>
+              </label>
+
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="lunch">
+                  <span>Traditional Regional Lunch</span>
+                </div>
+                <span class="service-price-tag">+₹250 /person/day</span>
+              </label>
+
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="dinner" checked>
+                  <span>Orchard Bonfire Dinner</span>
+                </div>
+                <span class="service-price-tag">+₹300 /person/day</span>
+              </label>
+
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="laundry">
+                  <span>Laundry Service</span>
+                </div>
+                <span class="service-price-tag">+₹120 /load</span>
+              </label>
+
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="cleaning" checked>
+                  <span>Daily Room Cleaning</span>
+                </div>
+                <span class="service-price-tag">+₹100 /night</span>
+              </label>
+
+              <label class="service-option-row">
+                <div class="service-label-group">
+                  <input type="checkbox" data-service-key="guide">
+                  <span>Local Heritage Guided Walk</span>
+                </div>
+                <span class="service-price-tag">+₹450 flat</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Verified Travel Agency Option -->
+          <div class="planner-section-card" style="background:#f0fdf4; border-color:#bbf7d0;">
+            <div class="section-headline" style="color:var(--primary-800);">
+              <span>Verified Travel Agency Assistance</span>
+              <span style="font-size:0.74rem; background:#dcfce7; padding:2px 8px; border-radius:99px;">Optional</span>
+            </div>
+            <p style="font-size:0.84rem; color:var(--primary-800); margin-bottom:0.85rem;">
+              Directly book an accredited local agency providing a dedicated private vehicle and local driver coordinator.
+            </p>
+            <label class="service-option-row" style="background:var(--white);">
+              <div class="service-label-group">
+                <input type="checkbox" id="checkbox-agency-booking">
+                <span>Verified Private Vehicle &amp; Coordinator</span>
+              </div>
+              <span class="service-price-tag" style="background:#dcfce7; color:var(--primary-800);">+₹1,200 /person</span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Scrollable & Zoomable Map + Side Recommendations (Requirement 4 & 10) -->
+        <div class="planner-map-column">
+          <div class="map-wrapper-clean">
+            <div class="map-top-header">
+              <div>
+                <h3 style="font-family:var(--font-brand); font-size:1.2rem; font-weight:800; margin:0; color:var(--neutral-900);">
+                  Interactive Locality &amp; Route Map
+                </h3>
+                <span style="font-size:0.8rem; color:var(--neutral-500);">
+                  Zoomable and scrollable. Solid line: Highway road network &bull; Dotted line: Chronological visit order.
+                </span>
+              </div>
+
+              <!-- Actual Offline Mini Map Download Button -->
+              <div style="display:flex; gap:.55rem; align-items:center; flex-wrap:wrap;">
+                <button type="button" class="btn-final-path" id="btn-clear-unselected" onclick="clearUnselectedPlaces()">
+                  Clear Unselected
+                </button>
+                <button type="button" class="btn-final-path" id="btn-show-final-path" onclick="toggleFinalPath()">
+                  Show Final Path
+                </button>
+                <button type="button" class="btn-download-map" id="btn-download-offline-map" title="Download actual offline mini map with waypoints & emergency contacts">
+                  Download Offline Mini Map
+                </button>
+              </div>
+            </div>
+
+            <!-- Two-Type Route Legend Header (Requirement: Solid Road Route + Dotted Visitable Order) -->
+            <div class="map-route-legend-bar">
+              <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+                <div class="legend-item" title="Solid green line following real highways">
+                  <span class="legend-line-solid"></span>
+                  <span>Highway Road Network (Actual Roads)</span>
+                </div>
+                <div class="legend-item" title="Dotted line showing chronological visit order">
+                  <span class="legend-line-dotted"></span>
+                  <span>Visitable Spots Sequence (Custom Order)</span>
+                </div>
+              </div>
+              <div>
+                <div id="map-metrics-pill" class="route-metrics-pill">
+                  6 Spots Selected &bull; Solid: Road Network &bull; Dotted: Visit Order
+                </div>
+                <div id="final-path-status" style="font-size:.68rem;color:var(--neutral-500);margin-top:.25rem;text-align:right;">Preview view: browse all available places and edit your route.</div>
+                <div id="route-duration-impact" class="route-duration-impact">Calculating route time…</div>
+              </div>
+            </div>
+
+            <!-- Zoomable, scrollable Leaflet map -->
+            <div id="staysphere-map"></div>
+          </div>
+
+          <!-- Live Cost Summary Card -->
+          <div class="live-cost-summary-card">
+            <div class="cost-breakup-preview">
+              <span style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:#a7f3d0; font-weight:700;">
+                Transparent Bifurcated Total:
+              </span>
+              <div class="cost-total-amount" id="planner-grand-total">₹2,800</div>
+              <span id="planner-breakup-text" style="font-size:0.82rem; opacity:0.85;">
+                2 travelers &bull; 3 nights + ₹500 Flat Platform Fee
+              </span>
+            </div>
+
+            <button type="button" class="btn-proceed-checkout" data-switch-tab="checkout">
+              Proceed to Cart &rarr;
+            </button>
+          </div>
+
+          <!-- Recent Community Recommendations beside the map (Requirement 4) -->
+          <div class="map-community-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h4 style="font-family:var(--font-brand); font-size:1.15rem; font-weight:800; margin:0; color:var(--neutral-900);">
+                Recent Traveler Recommendations for this Route
+              </h4>
+              <span style="font-size:0.78rem; color:var(--neutral-500);">Verified Local Insights</span>
+            </div>
+
+            <div class="community-tips-horizontal-grid">
+              <div class="tip-card-clean">
+                <div class="tip-header">
+                  <span>Jogini Falls Trail (Old Manali)</span>
+                  <span style="color:var(--neutral-400);">By Siddharth</span>
+                </div>
+                <p>
+                  "Start the trek by 8:00 AM from Vashisht temple before crowds arrive. Fresh rhododendron juice stalls at the mid-point charge just ₹40. Unmatched serenity."
+                </p>
+              </div>
+
+              <div class="tip-card-clean">
+                <div class="tip-header">
+                  <span>Chalal River Bridge (Kasol)</span>
+                  <span style="color:var(--neutral-400);">By Ananya</span>
+                </div>
+                <p>
+                  "Cross the wooden suspension bridge over Parvati river at twilight. The local trout fish and wood-fired flatbreads in Chalal village are exceptional."
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 4. CART TAB (Requirement 7: No surge mentioned) ==================== -->
+    <section id="view-checkout" class="app-view">
+      <div class="cart-spacious-grid">
+        <!-- Left: Fully Itemized Bill (No surge mentioned) -->
+        <div class="cart-card-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <h2 style="font-family:var(--font-brand); font-size:1.75rem; font-weight:800; margin:0;">
+              Cart Summary
+            </h2>
+            <span style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-size:0.76rem; font-weight:700; padding:0.25rem 0.65rem; border-radius:99px;">
+              Zero Hidden Charges Guarantee
+            </span>
+          </div>
+          <p style="font-size:0.88rem; color:var(--neutral-500); margin:0 0 1.5rem;">
+            Every single rupee is listed below. You will never be asked for surprise checkout fees or unexpected chores.
+          </p>
+
+          <div id="cart-price-lock-note" class="cart-price-lock-note">Your final planner quote will be locked here.</div>
+          <table class="bifurcated-bill-table">
+            <thead>
+              <tr>
+                <th>Service Description</th>
+                <th style="text-align:right;">Amount (₹ INR)</th>
+              </tr>
+            </thead>
+            <tbody id="cart-bill-body">
+              <!-- Injected dynamically via JS without mentioning surge -->
+            </tbody>
+          </table>
+
+          <!-- Coupon Code Input -->
+          <div style="display:flex; gap:0.5rem; margin-bottom:2rem;">
+            <input type="text" id="input-coupon-code" class="form-control" placeholder="Promo code (Try FIRSTSTAY or FIVE5)" style="text-transform:uppercase;">
+            <button type="button" class="btn-portal-secondary" id="btn-apply-coupon" style="flex:none; padding:0 1.5rem;">
+              Apply
+            </button>
+          </div>
+
+          <!-- Split Expenses & In-App Group Wallet -->
+          <div class="cart-split-box">
+            <h4 style="font-family:var(--font-brand); font-size:1.05rem; font-weight:700; margin-bottom:0.35rem;">
+              Split Group Expenses
+            </h4>
+            <p style="font-size:0.82rem; color:var(--neutral-500); margin-bottom:1rem;">
+              Split equally across group members and pool contributions into the group wallet.
+            </p>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; background:var(--white); padding:0.85rem 1.25rem; border-radius:var(--radius-md); border:1px solid var(--neutral-200);">
+              <div>
+                <span style="font-size:0.78rem; color:var(--neutral-400); display:block;">Each Member's Share:</span>
+                <strong style="font-size:1.35rem; color:var(--neutral-900);" id="cart-split-share">₹933</strong>
+              </div>
+              <button type="button" class="btn-portal-secondary" id="btn-contribute-wallet" style="font-size:0.82rem;">
+                + Add Friend's Share to Wallet
+              </button>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding:0.75rem 1rem; background:#f0fdf4; border-radius:var(--radius-md); border:1px solid #bbf7d0;">
+              <div>
+                <span style="font-size:0.78rem; color:var(--primary-800); display:block;">Group Wallet Balance:</span>
+                <strong style="font-size:1.15rem; color:var(--primary-800);" id="cart-wallet-bal">₹0</strong>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:0.78rem; color:var(--primary-800); display:block;">Remaining to be Paid:</span>
+                <span id="cart-wallet-due" style="font-weight:800; font-size:1rem; color:var(--primary-800);">₹2,800</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Added feature: payment links and reciprocal group-share payment -->
+          <div class="cart-share-pay-card">
+            <div>
+              <span class="share-pay-kicker">GROUP PAYMENTS</span>
+              <h4>Share the tour and pay the right share</h4>
+              <p>Create a link for your friends, pay only your portion, or open a friend's link to review their tour plan and pay their share.</p>
+            </div>
+            <div class="share-pay-actions">
+              <button type="button" class="btn-portal-primary" id="btn-create-payment-link">Create payment link</button>
+              <button type="button" class="btn-portal-secondary" id="btn-pay-my-share">Pay my share</button>
+              <button type="button" class="btn-portal-secondary" id="btn-pay-group-share">Pay group share</button>
+            </div>
+            <div id="payment-link-result" class="payment-link-result" hidden></div>
+            <div id="shared-tour-panel" class="shared-tour-panel" hidden></div>
+          </div>
+        </div>
+
+        <!-- Right: Test Payment Gateway Modal -->
+        <div class="cart-card-panel">
+          <h3 style="font-family:var(--font-brand); font-size:1.5rem; font-weight:800; margin-bottom:0.25rem;">
+            Test Mode Payment
+          </h3>
+          <span style="font-size:0.76rem; color:#059669; font-weight:700; background:#ecfdf5; padding:2px 8px; border-radius:99px;">
+            Sandbox Mode &bull; No Real Money Deducted
+          </span>
+
+          <div style="margin:1.5rem 0;">
+            <div style="border:1px solid var(--neutral-200); border-radius:var(--radius-md); padding:1.5rem; text-align:center; background:var(--neutral-50);">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--neutral-700); display:block; margin-bottom:0.6rem;">
+                Scan with UPI (GPay / PhonePe / Paytm)
+              </span>
+              <div style="width:140px; height:140px; background:var(--white); border:2px solid var(--neutral-200); margin:0 auto 0.75rem; display:flex; align-items:center; justify-content:center;">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="1.8">
+                  <rect x="2" y="2" width="8" height="8" rx="1"/>
+                  <rect x="14" y="2" width="8" height="8" rx="1"/>
+                  <rect x="2" y="14" width="8" height="8" rx="1"/>
+                  <rect x="4" y="4" width="4" height="4" fill="#1e293b"/>
+                  <rect x="16" y="4" width="4" height="4" fill="#1e293b"/>
+                  <rect x="4" y="16" width="4" height="4" fill="#1e293b"/>
+                  <path d="M14 14h2v2h-2zM18 14h4v2h-4zM14 18h2v4h-2zM18 18h4v4h-4z"/>
+                </svg>
+              </div>
+              <span style="font-size:0.75rem; color:var(--neutral-500);">
+                VPA: <strong>staysphere.trip@okhdfcbank</strong>
+              </span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-confirm-test-pay" id="btn-confirm-test-payment">
+            Confirm &amp; Pay (Test Mode)
+          </button>
+
+          <p style="font-size:0.75rem; color:var(--neutral-400); text-align:center; margin-top:0.85rem;">
+            Instant confirmation voucher will be generated and saved into your Past Trips ledger.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. FRIENDS & GROUP ==================== -->
+    <section id="view-group" class="app-view">
+      <div class="group-page-header">
+        <span class="group-kicker">STAYSPHERE SOCIAL</span>
+        <h2>Friends &amp; Group</h2>
+        <p>Add people who already have StaySphere accounts, plan together, chat, and vote on the route.</p>
+      </div>
+      <div class="group-layout">
+        <div class="group-panel">
+          <div class="group-panel-head"><div><h3>Your friends</h3><p>Only StaySphere accounts can be added.</p></div></div>
+          <div class="friend-search-row"><input id="friend-search" class="form-control" placeholder="Search by name or email"><button class="btn-portal-primary" id="btn-add-friend">Add friend</button></div>
+          <div id="friend-search-results" class="friend-search-results"></div>
+          <div id="friends-list" class="friends-list"></div>
+        </div>
+        <div class="group-panel chat-panel">
+          <div class="group-panel-head"><div><h3>Trip chat</h3><p id="chat-subtitle">Plan the route with your group.</p></div><span class="online-dot">Live</span></div>
+          <div id="chat-messages" class="chat-messages"></div>
+          <form id="chat-form" class="chat-compose"><input id="chat-input" class="form-control" placeholder="Message your group…" autocomplete="off"><button class="btn-portal-primary">Send</button></form>
+        </div>
+        <div class="group-panel polls-panel">
+          <div class="group-panel-head"><div><h3>Trip polls</h3><p>Let the group decide what gets added.</p></div></div>
+          <form id="poll-form" class="poll-create-form"><input id="poll-question" class="form-control" placeholder="Ask the group something…" required><input id="poll-options" class="form-control" placeholder="Options separated by commas" required><button class="btn-portal-primary">Create poll</button></form>
+          <div id="polls-list" class="polls-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. PAST TRIPS TAB (Requirement 3 & 5: Real destination images) ==================== -->
+    <section id="view-pasttrips" class="app-view">
+      <div style="margin-bottom:2.5rem;">
+        <h2 style="font-family:var(--font-brand); font-size:2.2rem; font-weight:800; margin-bottom:0.4rem;">
+          Past Trips
+        </h2>
+        <p style="color:var(--neutral-500); font-size:1rem;">
+          Review your completed journeys, inspect itemized receipts, and leave feedback.
+        </p>
+      </div>
+
+      <!-- Real Destination Imagery Past Trips Cards (Requirement 3) -->
+      <div id="past-trips-container" class="past-trips-spacious-list">
+        <!-- Rendered via JS with actual place photos -->
+      </div>
+    </section>
+
+    <!-- ==================== 6. BUSINESS / HOST DASHBOARD (Requirement 2: Admin side only) ==================== -->
+    <section id="view-business" class="app-view">
+      <div style="margin-bottom:2.5rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span style="font-size:0.76rem; font-weight:700; color:var(--primary-700); text-transform:uppercase; letter-spacing:0.06em;">Admin &bull; Partner Portal</span>
+            <h2 style="font-family:var(--font-brand); font-size:2.2rem; font-weight:800; margin:0.25rem 0;">
+              Host &amp; Travel Agency Management
+            </h2>
+          </div>
+          <span style="font-size:0.8rem; background:#eff6ff; color:#1e40af; padding:0.4rem 0.85rem; border-radius:var(--radius-full); font-weight:600;">
+            10% Platform Commission Tier
+          </span>
+        </div>
+        <p style="color:var(--neutral-500); font-size:1rem; margin-top:0.4rem;">
+          Manage accommodations, tour packages, and review verified booking receipts.
+        </p>
+      </div>
+
+      <div class="biz-stats-grid">
+        <div class="biz-stat-card">
+          <h5>Total Bookings Received</h5>
+          <div class="stat-val">19</div>
+          <span style="font-size:0.76rem; color:#059669; font-weight:600;">Active Travelers</span>
+        </div>
+
+        <div class="biz-stat-card">
+          <h5>Gross Booking Volume</h5>
+          <div class="stat-val">₹94,500</div>
+          <span style="font-size:0.76rem; color:var(--neutral-500);">All verified bookings</span>
+        </div>
+
+        <div class="biz-stat-card">
+          <h5>10% Platform Commission</h5>
+          <div class="stat-val" style="color:#d97706;">₹9,450</div>
+          <span style="font-size:0.76rem; color:var(--neutral-500);">Per booked guest</span>
+        </div>
+
+        <div class="biz-stat-card">
+          <h5>Net Partner Payout</h5>
+          <div class="stat-val" style="color:#059669;">₹85,050</div>
+          <span style="font-size:0.76rem; color:#059669; font-weight:700;">Direct UPI/Bank Settled</span>
+        </div>
+      </div>
+
+      <div class="cart-card-panel" style="margin-top:2rem;">
+        <h3 style="font-family:var(--font-brand); font-size:1.35rem; font-weight:800; margin-bottom:0.4rem;">
+          Add Accommodation or Travel Agency Listing
+        </h3>
+        <p style="font-size:0.85rem; color:var(--neutral-500); margin-bottom:1.5rem;">
+          Submit your property or tour vehicle package to be mapped onto arrival-hub itineraries.
+        </p>
+
+        <form id="form-add-business-property" style="display:flex; flex-direction:column; gap:1.15rem;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label for="prop-name">Property / Agency Name</label>
+              <input type="text" id="prop-name" class="form-control" placeholder="e.g. Pinecrest Riverside Retreat" required>
+            </div>
+            <div class="form-group">
+              <label for="prop-type">Category</label>
+              <select id="prop-type" class="form-control">
+                <option value="Homestay">Heritage Homestay / Traditional B&amp;B</option>
+                <option value="Hotel">Boutique Mountain Hotel / Eco-Resort</option>
+                <option value="Agency">Verified Travel Agency / Private Vehicle</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label for="prop-price">Base Rate per Room / Night (₹ INR)</label>
+              <input type="number" id="prop-price" class="form-control" value="4500" required>
+            </div>
+            <div class="form-group">
+              <label for="prop-contact">Contact Phone</label>
+              <input type="tel" id="prop-contact" class="form-control" placeholder="+91 98123 45678" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-portal-primary" style="align-self:flex-start; padding:0.8rem 1.8rem;">
+            Submit Listing for Verification
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== ROLE CHOOSER MODAL (Requirement 6) ==================== -->
+  <div id="role-chooser-modal" class="role-modal-overlay">
+    <div class="role-modal-container">
+      <button type="button" class="btn-close-modal" id="btn-close-role-modal" aria-label="Close modal">&times;</button>
+      <h2 id="role-modal-title" style="font-family:var(--font-brand); font-size:1.85rem; font-weight:800; margin-bottom:0.35rem;">
+        Welcome to StaySphere
+      </h2>
+      <p id="role-modal-subtitle" style="font-size:0.92rem; color:var(--neutral-500);">
+        Select your portal to continue
+      </p>
+
+      <div class="role-options-grid">
+        <a href="user-auth.html#signin" id="role-link-traveler" class="role-choice-card">
+          <div class="role-choice-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h4>Traveler Portal</h4>
+          <p>Plan routes from arrival hubs, explore local stays, and book with zero hidden fees.</p>
+        </a>
+
+        <a href="business-auth.html#signin" id="role-link-host" class="role-choice-card">
+          <div class="role-choice-icon" style="color:var(--saffron-500);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>
+          </div>
+          <h4>Host &amp; Business Hub</h4>
+          <p>List your homestay or verified travel agency with transparent 10% commission.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer style="background:var(--white); border-top:1px solid var(--neutral-200); padding:3.5rem 2.5rem; font-size:0.88rem; color:var(--neutral-500);">
+    <div style="max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <img src="assets/icon-mountain.webp" alt="Peak" style="width:30px; height:30px; object-fit:contain;">
+        <span class="brand-title"><span class="brand-s">S</span>taySphere</span>
+      </div>
+      <div>
+        <span>Flat ₹500 Platform Fee &bull; Zero Hidden Chores &bull; Offline Mini Maps &bull; 10% Host Commission</span>
+      </div>
+      <div style="display:flex; gap:1.5rem;">
+        <a href="#business" data-switch-tab="business" style="color:var(--neutral-700); text-decoration:underline;">Admin / Host Portal</a>
+        <a href="user-auth.html" style="color:var(--neutral-700); text-decoration:underline;">Traveler Auth</a>
+        <a href="business-auth.html" style="color:var(--neutral-700); text-decoration:underline;">Business Auth</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet OpenStreetMap JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <script src="js/ist-engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
